@@ -1,0 +1,24 @@
+#imagePreview{
+  margin: 20px;
+
+}
+#imagesize{
+  width: 100px;
+  height: 100px;
+}
+.currentimg{
+  width: 100px;
+  height: 100px;
+}
+ul li:first-child{
+ margin-left: 0;
+}
+
+ul li{
+  margin: 20px;
+  display: inline-block;
+  list-style: none;
+}
+table.align-middle td{
+ vertical-align: middle !important;
+}

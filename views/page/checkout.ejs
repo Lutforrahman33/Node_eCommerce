@@ -1,0 +1,94 @@
+<%- include('../_layouts/header') %>
+
+<% if(typeof cart !== "undefined") { %>
+
+<h4 class="text-center mt-2">My Cart</h4>
+<br> 
+<table class="table table-striped align-middle">
+  <thead>
+    <th>Title</th>
+    <th> Image</th>
+    <th> Quantity</th>
+    <th> Price</th>
+    <th> Update </th>
+    <th> Subtotal</th>
+  </thead>
+  <tbody>
+    <% var total =0; %>
+    <% cart.forEach(p =>{ %>
+     <% var subtotal = parseFloat(p.price*p.qnty).toFixed(2) ;
+         total+= +subtotal;
+      %>
+      <tr>
+        <td><%= p.title %></td>
+        <td><img class="cpi" src="<%= p.image %>"></td>
+        <td><%= p.qnty %></td>
+        <td>$<%= p.price %></td>
+        <td> 
+           <a href="/cart/update/<%= p.title %>?action=add"> + </a>&nbsp
+           <a href="/cart/update/<%= p.title %>?action=remove"> - </a>&nbsp
+           <a href="/cart/update/<%= p.title %>?action=clear"> clear </a>&nbsp
+        </td>
+        <td>$<%= subtotal %></td>
+      </tr>
+   <% }) %>
+      <tr> <td colspan="6" align="right"><b>Total : </b>$<%= parseFloat(total).toFixed(2) %></td></tr>
+      <tr>
+        <td colspan="5" align="right">
+          <a class="btn btn-danger confirmClear" href="/cart/clear">Clear Cart</a>
+        </td>
+        <td colspan="5" align="right">
+          <a class="btn btn-primary buyNow" href="#">Buy Now</a>
+        </td>
+      </tr>
+  </tbody>
+</table>
+
+<!-- Paypal Form-->
+
+<form action="https://www.sandbox.paypal.com/us/cgi-bin/webscr" method="post" class="pp">
+   <input type="hidden" name="cmd" value="_cart">
+   <input type="hidden" name="upload" value="1">
+   <input type="hidden" name="business" value="liton_cse_33@yahoo.com">
+   <% var num = 0; %>
+   <% cart.forEach(p=>{ %>
+    <% num++ ; %>
+     <input type="hidden" name="item_name_<%= num %>" value="<%= p.title %>">
+     <input type="hidden" name="amount_<%= num %>" value="<%= p.price %>">
+     <input type="hidden" name="quantity_<%= num %>" value="<%= p.qnty %>">
+
+   <% }) %>
+
+   <input type="hidden" name="currency_code" value="USD">
+   <input type="hidden" name="amount" value="<%= total %>">
+   <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+</form>
+
+
+<% }else{ %>
+  <h3 class="text-center"> Your cart is Empty</h3>
+<% } %>
+
+
+<script>
+  $(document).ready(function(){
+
+ $('a.confirmClear').on('click' , ()=>{
+   if(!confirm('Clear All Cart ?'))
+     return false;
+ });
+
+ $('a.buyNow').on('click' , (e)=>{
+  e.preventDefault();
+    $.get('/cart/buynow' , ()=>{
+        $('form.pp input[type=image]').click();
+    });
+ });
+
+});
+  
+
+</script>
+
+
+<%- include('../_layouts/footer') %>
